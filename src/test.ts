@@ -3,28 +3,50 @@
 hidemaruGlobal.showbrowserpane(1, 2);
 hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
 
-var timerHandle = 0; // 時間を跨いで共通利用するので、varで
+var timerHandle: number = 0; // 時間を跨いで共通利用するので、varで
 
-function heavyTick() {
-    if (isTextUpdated() || isCountUpdated()) {
-        hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterPost"; js {refreshbrowserpane(2);}`);
-        console.log("dif");
+hidemaruGlobal.debuginfo(2);
+function updateMethod() {
+    if (isTextUpdated() /* || isCountUpdated()*/) {
+        if (isFileUpdated()) {
+            console.log("fileUpdated\r\n")
+            try {
+                hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterPost"; js {refreshbrowserpane(2);}`);
+            } catch (e) {
+                console.log(e);
+            }
+        }
     }
 }
 
-var updateCount = 0;
-function isCountUpdated() {
-    let curCount = hidemaru.getUpdateCount();
+var lastFileModified = 0;
+function isFileUpdated(): boolean {
+    let diff: boolean = false;
+    let fso = hidemaru.createObject("Scripting.FileSystemObject");
+    let f = fso.GetFile(hidemaru.getFileFullPath());
+    let m = f.DateLastModified;
+    if (m != lastFileModified) {
+        diff = true;
+        lastFileModified = m;
+    }
+    return diff;
+}
+
+/*
+var updateCount: number = 0;
+function isCountUpdated(): boolean {
+    let curCount: number = hidemaru.getUpdateCount();
     if (updateCount != curCount) {
         updateCount = curCount;
         return true;
     }
     return false;
 }
+*/
 
-var preText = ""; // 時間を跨いで共通利用するので、varで
-function isTextUpdated() {
-    let curText = hidemaru.getTotalText();
+var preText: string = ""; // 時間を跨いで共通利用するので、varで
+function isTextUpdated(): boolean {
+    let curText: string = hidemaru.getTotalText();
     if (curText != undefined && preText != curText) {
         preText = curText;
         return true;
@@ -34,16 +56,16 @@ function isTextUpdated() {
 }
 
 function stopIntervalTick() {
-	if (timerHandle != 0) {
-	    createIntervalTick(timerHandle);
-	}
+    if (timerHandle != 0) {
+        createIntervalTick(timerHandle);
+    }
 }
 
-function createIntervalTick(func) {
+function createIntervalTick(func): number {
     stopIntervalTick();
-	timerHandle = setInterval(func, 1000);
+    timerHandle = setInterval(func, 1000);
     return timerHandle;
 }
 
-heavyTick();
-createIntervalTick(heavyTick);
+updateMethod();
+createIntervalTick(updateMethod);

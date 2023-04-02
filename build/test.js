@@ -1,6 +1,8 @@
 /// <reference path="../types/hm_jsmode_strict.d.ts" />
 hidemaruGlobal.showbrowserpane(2);
 hidemaruGlobal.setbrowserpaneurl(filename2(), 2);
+
+/*
 var timerHandle = 0; // 時間を跨いで共通利用するので、varで
 function heavyTick() {
     if (isTextUpdated() || isCountUpdated()) {
@@ -38,3 +40,4 @@ function createIntervalTick(func) {
 }
 heavyTick();
 createIntervalTick(heavyTick);
+*/

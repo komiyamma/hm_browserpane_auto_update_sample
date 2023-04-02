@@ -4,7 +4,15 @@ hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
 var timerHandle = 0; // 時間を跨いで共通利用するので、varで
 hidemaruGlobal.debuginfo(2);
 function updateMethod() {
-    if (isTextUpdated() /* || isCountUpdated()*/) {
+    if (isFileNameChanged()) {
+        try {
+            hidemaru.postExecMacroMemory("setbrowserpaneurl filename2, 2;");
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+    else if (isTextUpdated() /* || isCountUpdated()*/) {
         if (isFileUpdated()) {
             console.log("fileUpdated\r\n");
             try {
@@ -15,6 +23,17 @@ function updateMethod() {
             }
         }
     }
+    console.log(hidemaru.getFileFullPath());
+}
+var lastFileName = "";
+function isFileNameChanged() {
+    var diff = false;
+    var curFileName = hidemaru.getFileFullPath();
+    if (curFileName != lastFileName) {
+        diff = true;
+    }
+    lastFileName = curFileName;
+    return diff;
 }
 var lastFileModified = 0;
 function isFileUpdated() {
@@ -68,9 +87,5 @@ function getCurCursorYPos() {
     console.log("curY:" + pos[0]);
     return pos[0];
 }
-getAllLineCount();
-getCurCursorYPos();
-/*
 updateMethod();
 createIntervalTick(updateMethod);
-*/ 

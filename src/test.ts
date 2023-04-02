@@ -6,8 +6,16 @@ hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
 var timerHandle: number = 0; // 時間を跨いで共通利用するので、varで
 
 hidemaruGlobal.debuginfo(2);
+
 function updateMethod() {
-    if (isTextUpdated() /* || isCountUpdated()*/) {
+    if (isFileNameChanged()) {
+        try {
+            hidemaru.postExecMacroMemory(`setbrowserpaneurl filename2, 2;`);
+        } catch(e) {
+            console.log(e);
+        }
+    }
+    else if (isTextUpdated() /* || isCountUpdated()*/) {
         if (isFileUpdated()) {
             console.log("fileUpdated\r\n")
             try {
@@ -17,12 +25,26 @@ function updateMethod() {
             }
         }
     }
+
+    console.log(hidemaru.getFileFullPath());
 }
 
-var lastFileModified = 0;
+var lastFileName: string = "";
+function isFileNameChanged(): boolean {
+    let diff: boolean = false;
+    let curFileName = hidemaru.getFileFullPath();
+    if (curFileName != lastFileName) {
+        diff = true;
+    }
+
+    lastFileName = curFileName;
+    return diff;
+}
+
+var lastFileModified: number = 0;
 function isFileUpdated(): boolean {
     let diff: boolean = false;
-    let fso = hidemaru.createObject("Scripting.FileSystemObject");
+    let fso: any = hidemaru.createObject("Scripting.FileSystemObject");
     let f = fso.GetFile(hidemaru.getFileFullPath());
     let m = f.DateLastModified;
     if (m != lastFileModified) {
@@ -78,9 +100,6 @@ function getCurCursorYPos() {
     console.log("curY:"+pos[0]);
     return pos[0];
 }
-getAllLineCount();
-getCurCursorYPos();
-/*
+
 updateMethod();
 createIntervalTick(updateMethod);
-*/

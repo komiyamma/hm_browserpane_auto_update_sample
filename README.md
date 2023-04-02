@@ -1,5 +1,5 @@
 # hm_browserpane_auto_update_sample
-秀丸 - ブラウザ固有枠 - 自動更新 - サンプル - (多分秀丸本体のshowbrowserpane 2はバグってる)
+秀丸 - ブラウザ固有枠 - 自動更新 - サンプル
 
 # showbrowserpane 2 が正しく機能しない疑惑あり
 

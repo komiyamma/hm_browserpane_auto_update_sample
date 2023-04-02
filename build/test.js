@@ -58,5 +58,19 @@ function createIntervalTick(func) {
     timerHandle = setInterval(func, 1000);
     return timerHandle;
 }
+function getAllLineCount() {
+    var text = hidemaru.getTotalText();
+    var cnt = text.match(/\n/g);
+    console.log("\\n:" + cnt.length);
+}
+function getCurCursorYPos() {
+    var pos = hidemaru.getCursorPos("wcs");
+    console.log("curY:" + pos[0]);
+    return pos[0];
+}
+getAllLineCount();
+getCurCursorYPos();
+/*
 updateMethod();
 createIntervalTick(updateMethod);
+*/ 

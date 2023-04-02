@@ -1,0 +1,2 @@
+﻿jsmode @"WebView2\HmBrowserAutoUpdaterMain";
+execjs currentmacrodirectory + @"\test.js";

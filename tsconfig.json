@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["ES2021", "DOM"],
+    "module": "None",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "removeComments": false,
+    "outDir": "./build",
+  },
+
+  "include": ["./src"],
+}
+

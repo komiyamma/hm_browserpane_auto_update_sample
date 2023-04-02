@@ -1,7 +1,7 @@
 /// <reference path="../types/hm_jsmode_strict.d.ts" />
 
-hidemaruGlobal.showbrowserpane(2);
-hidemaruGlobal.setbrowserpaneurl(filename2(), 2);
+hidemaruGlobal.showbrowserpane(1, 2);
+hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
 
 var timerHandle = 0; // 時間を跨いで共通利用するので、varで
 

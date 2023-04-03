@@ -163,7 +163,12 @@ function createIntervalTick(func) {
 function getAllLineCount() {
     var text = hidemaru.getTotalText();
     var cnt = text.match(/\n/g);
-    return cnt.length;
+    if (cnt) {
+        return cnt.length;
+    }
+    else {
+        return 1;
+    }
 }
 function getCurCursorYPos() {
     var pos = hidemaru.getCursorPos("wcs");

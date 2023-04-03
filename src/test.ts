@@ -61,9 +61,9 @@ function updateMethod() {
     }
 }
 
-var lastPosY = 0;
-var lastPosYArray: number[] = [3,2,1]; // 全部違う値で先頭付近でとりあえず埋めておく
-var lastAllLineCount = 0;
+let lastPosY = 0;
+let lastPosYArray: number[] = [3,2,1]; // 全部違う値で先頭付近でとりあえず埋めておく
+let lastAllLineCount = 0;
 function getChangeYPos():[boolean, number, number] {
     let diff: boolean = false;
     let posY = getCurCursorYPos();
@@ -101,7 +101,7 @@ function getChangeYPos():[boolean, number, number] {
     return [diff, posY, allLineCount];
 }
 
-var lastFileName: string = "";
+let lastFileName: string = "";
 function isFileNameChanged(): boolean {
     let diff: boolean = false;
     let curFileName = hidemaru.getFileFullPath();
@@ -113,7 +113,7 @@ function isFileNameChanged(): boolean {
     return diff;
 }
 
-var lastFileModified: number = 0;
+let lastFileModified: number = 0;
 function isFileUpdated(): boolean {
     let diff: boolean = false;
     let filepath = hidemaru.getFileFullPath();
@@ -130,7 +130,7 @@ function isFileUpdated(): boolean {
 }
 
 
-var updateCount: number = 0;
+let updateCount: number = 0;
 function isCountUpdated(): boolean {
     let curCount: number = hidemaru.getUpdateCount();
     if (updateCount != curCount) {
@@ -141,7 +141,7 @@ function isCountUpdated(): boolean {
 }
 
 
-var preText: string = ""; // 時間を跨いで共通利用するので、varで
+let preText: string = "";
 function isTextUpdated(): boolean {
     let curText: string = hidemaru.getTotalText();
     if (curText != undefined && preText != curText) {

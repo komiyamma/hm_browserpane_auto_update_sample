@@ -137,7 +137,7 @@ function isCountUpdated() {
     }
     return false;
 }
-var preText = ""; // 時間を跨いで共通利用するので、varで
+var preText = "";
 function isTextUpdated() {
     var curText = hidemaru.getTotalText();
     if (curText != undefined && preText != curText) {

@@ -23,7 +23,7 @@ function updateMethod() {
     }
     else if (isCountUpdated()) {
         //  console.log("isCountUpdated\r\n")
-        if (isFileUpdated()) {
+        if (isFileLastModifyUpdated()) {
             // console.log("isFileUpdated\r\n")
             try {
                 hidemaru.postExecMacroMemory("jsmode @\"WebView2HmBrowserAutoUpdaterMain\"; js {refreshbrowserpane(2);}");
@@ -77,7 +77,7 @@ function getChangeYPos() {
     }
     lastPosYArray.push(posY);
     lastPosYArray.shift();
-    console.log(lastPosYArray);
+    // console.log(lastPosYArray);
     // ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
     if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
         var mousePosY = getCurCursorYPosFromMousePos();
@@ -114,7 +114,7 @@ function isFileNameChanged() {
     return diff;
 }
 var lastFileModified = 0;
-function isFileUpdated() {
+function isFileLastModifyUpdated() {
     var diff = false;
     var filepath = hidemaru.getFileFullPath();
     if (filepath != "") {

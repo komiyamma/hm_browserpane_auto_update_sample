@@ -75,7 +75,7 @@ function getChangeYPos(): [boolean, number, number] {
     }
     lastPosYArray.push(posY);
     lastPosYArray.shift();
-    console.log(lastPosYArray);
+    // console.log(lastPosYArray);
     // ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
     if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
         let mousePosY = getCurCursorYPosFromMousePos();

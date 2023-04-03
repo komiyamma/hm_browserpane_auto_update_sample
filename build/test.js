@@ -40,19 +40,20 @@ function updateMethod() {
             allLineCount = 1;
         }
         if (diff && posY > 0 && allLineCount > 0) {
-            if (posY < 10) { // 最初の行まであと10行程度なのであれば、最初にいる扱いにする。
+            if (posY < 15) { // 最初の行まであと10行程度なのであれば、最初にいる扱いにする。
                 posY = 0;
             }
             if (allLineCount - posY < 15) {
                 posY = allLineCount; // 最後の行まであと15行程度なのであれば、最後の行にいる扱いにする。
             }
             var perY = posY / allLineCount;
-            if (perY > 1) {
-                perY = 1;
+            if (perY >= 1) {
+                perY = 1.1; // これ丁度だと最後の行が微妙な感じになりやすい。
             }
             else if (perY < 0) {
                 perY = 0;
             }
+            console.log("perY:" + perY);
             try {
                 hidemaru.postExecMacroMemory("jsmode @\"WebView2HmBrowserAutoUpdaterMain\"; js {setbrowserpaneurl(\"javascript:window.scrollTo(0, parseInt(".concat(perY, "*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));\", 2)}"));
             }
@@ -134,11 +135,10 @@ function createIntervalTick(func) {
 function getAllLineCount() {
     var text = hidemaru.getTotalText();
     var cnt = text.match(/\n/g);
-    return cnt.length + 1;
+    return cnt.length;
 }
 function getCurCursorYPos() {
     var pos = hidemaru.getCursorPos("wcs");
-    console.log("curY:" + pos[0]);
     return pos[0];
 }
 updateMethod();

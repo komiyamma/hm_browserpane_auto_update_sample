@@ -4,7 +4,7 @@ hidemaruGlobal.setbrowserpaneurl(hidemaru.getFileFullPath(), 2);
 var timerHandle = 0; // 時間を跨いで共通利用するので、varで
 hidemaruGlobal.debuginfo(2);
 function updateMethod() {
-    if (!hidemaru.isMacroExecuting) {
+    if (hidemaru.isMacroExecuting()) {
         return;
     }
     if (isFileNameChanged()) {
@@ -68,11 +68,13 @@ var lastAllLineCount = 0;
 function getChangeYPos() {
     var diff = false;
     var posY = getCurCursorYPos();
+    console.log("posY:" + posY);
     var allLineCount = getAllLineCount();
     if (lastPosY != posY) {
         lastPosY = posY;
         diff = true;
     }
+    console.log("poallLineCounts:" + allLineCount);
     if (lastAllLineCount != allLineCount) {
         lastAllLineCount = allLineCount;
         diff = true;
@@ -143,3 +145,4 @@ function getCurCursorYPos() {
 }
 updateMethod();
 createIntervalTick(updateMethod);
+console.log("マクロ終了");

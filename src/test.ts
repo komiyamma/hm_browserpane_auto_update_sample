@@ -8,10 +8,9 @@ var timerHandle: number = 0; // 時間を跨いで共通利用するので、var
 hidemaruGlobal.debuginfo(2);
 
 function updateMethod() {
-    if (!hidemaru.isMacroExecuting) {
+    if (hidemaru.isMacroExecuting()) {
         return;
     }
-
     if (isFileNameChanged()) {
         // console.log("isFileNameChanged\r\n")
         try {
@@ -52,7 +51,7 @@ function updateMethod() {
             } else if (perY < 0) {
                 perY = 0
             }
-            console.log("perY:"+perY);
+            // console.log("perY:"+perY);
             try {
                 hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {setbrowserpaneurl("javascript:window.scrollTo(0, parseInt(${perY}*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));", 2)}`);
             } catch (e) {
@@ -67,11 +66,13 @@ var lastAllLineCount = 0;
 function getChangeYPos():[boolean, number, number] {
     let diff: boolean = false;
     let posY = getCurCursorYPos();
+    // console.log("posY:" + posY);
     let allLineCount = getAllLineCount();
     if (lastPosY != posY) {
         lastPosY = posY;
         diff = true;
     }
+    // console.log("poallLineCounts:" + allLineCount);
     if (lastAllLineCount != allLineCount) {
         lastAllLineCount = allLineCount;
         diff = true;
@@ -155,3 +156,4 @@ function getCurCursorYPos() {
 
 updateMethod();
 createIntervalTick(updateMethod);
+

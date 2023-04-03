@@ -8,25 +8,61 @@ var timerHandle: number = 0; // 時間を跨いで共通利用するので、var
 hidemaruGlobal.debuginfo(2);
 
 function updateMethod() {
+    if (!hidemaru.isMacroExecuting) {
+        return;
+    }
+
     if (isFileNameChanged()) {
+        // console.log("isFileNameChanged\r\n")
         try {
-            hidemaru.postExecMacroMemory(`setbrowserpaneurl filename2, 2;`);
+            if (hidemaru.getFileFullPath() == "") {
+                hidemaru.postExecMacroMemory(`setbrowserpaneurl "about:blank", 2;`); 
+            } else {
+                hidemaru.postExecMacroMemory(`setbrowserpaneurl filename2, 2;`);
+            }
         } catch(e) {
             console.log(e);
         }
     }
-    else if (isTextUpdated() /* || isCountUpdated()*/) {
+    else if ( isCountUpdated() ) {
+       //  console.log("isCountUpdated\r\n")
         if (isFileUpdated()) {
-            console.log("fileUpdated\r\n")
+            // console.log("isFileUpdated\r\n")
             try {
-                hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterPost"; js {refreshbrowserpane(2);}`);
+                hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {refreshbrowserpane(2);}`);
+                // let maxY = document.documentElement.scrollHeight - document.documentElement.clientHeight; window.scrollTo(0,50);
             } catch (e) {
                 console.log(e);
             }
         }
     }
+    else if ( true ) {
+        let [diff, posY, allLineCount] = getChangeYPos();
+        if (diff) {
+            let perY = posY / allLineCount;
+            try {
+                hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {setbrowserpaneurl("javascript:window.scrollTo(0, parseInt(${perY}*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));", 2)}`);
+                // let maxY = document.documentElement.scrollHeight - document.documentElement.clientHeight; window.scrollTo(0,50);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    }
+}
 
-    console.log(hidemaru.getFileFullPath());
+var lastPosY = 0;
+var lastAllLineCount = 0;
+function getChangeYPos() {
+    let diff: boolean = false;
+    let posY = getCurCursorYPos();
+    let allLineCount = getAllLineCount();
+    if (lastPosY != posY) {
+        diff = true;
+    }
+    if (lastAllLineCount != allLineCount) {
+        diff = true;
+    }
+    return [diff, posY, allLineCount];
 }
 
 var lastFileName: string = "";
@@ -44,17 +80,20 @@ function isFileNameChanged(): boolean {
 var lastFileModified: number = 0;
 function isFileUpdated(): boolean {
     let diff: boolean = false;
-    let fso: any = hidemaru.createObject("Scripting.FileSystemObject");
-    let f = fso.GetFile(hidemaru.getFileFullPath());
-    let m = f.DateLastModified;
-    if (m != lastFileModified) {
-        diff = true;
-        lastFileModified = m;
+    let filepath = hidemaru.getFileFullPath();
+    if (filepath != "") {
+        let fso: any = hidemaru.createObject("Scripting.FileSystemObject");
+        let f = fso.GetFile(filepath);
+        let m = f.DateLastModified;
+        if (m != lastFileModified) {
+            diff = true;
+            lastFileModified = m;
+        }
     }
     return diff;
 }
 
-/*
+
 var updateCount: number = 0;
 function isCountUpdated(): boolean {
     let curCount: number = hidemaru.getUpdateCount();
@@ -64,7 +103,7 @@ function isCountUpdated(): boolean {
     }
     return false;
 }
-*/
+
 
 var preText: string = ""; // 時間を跨いで共通利用するので、varで
 function isTextUpdated(): boolean {
@@ -92,7 +131,7 @@ function createIntervalTick(func): number {
 function getAllLineCount() {
     let text = hidemaru.getTotalText();
     let cnt = text.match(/\n/g);
-    console.log("\\n:" + cnt.length);
+    return cnt.length + 1;
 }
 
 function getCurCursorYPos() {

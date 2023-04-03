@@ -38,11 +38,22 @@ function updateMethod() {
     }
     else if ( true ) {
         let [diff, posY, allLineCount] = getChangeYPos();
-        if (diff) {
+        if (allLineCount < 0) { allLineCount = 1;}
+        if (diff && posY > 0 && allLineCount > 0) {
+            if ( posY < 10) { // 最初の行まであと10行程度なのであれば、最初にいる扱いにする。
+                posY = 0;
+            }
+            if ( allLineCount - posY < 15 ) {
+                posY = allLineCount; // 最後の行まであと15行程度なのであれば、最後の行にいる扱いにする。
+            }
             let perY = posY / allLineCount;
+            if (perY > 1) {
+                perY = 1;
+            } else if (perY < 0) {
+                perY = 0
+            }
             try {
                 hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {setbrowserpaneurl("javascript:window.scrollTo(0, parseInt(${perY}*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));", 2)}`);
-                // let maxY = document.documentElement.scrollHeight - document.documentElement.clientHeight; window.scrollTo(0,50);
             } catch (e) {
                 console.log(e);
             }
@@ -57,9 +68,11 @@ function getChangeYPos() {
     let posY = getCurCursorYPos();
     let allLineCount = getAllLineCount();
     if (lastPosY != posY) {
+        lastPosY = posY;
         diff = true;
     }
     if (lastAllLineCount != allLineCount) {
+        lastAllLineCount = allLineCount;
         diff = true;
     }
     return [diff, posY, allLineCount];

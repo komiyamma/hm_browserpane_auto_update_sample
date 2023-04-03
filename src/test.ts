@@ -46,7 +46,7 @@ function updateMethod() {
             if ( allLineCount - posY < 15 ) {
                 posY = allLineCount; // 最後の行まであと15行程度なのであれば、最後の行にいる扱いにする。
             }
-            let perY = posY / allLineCount;
+            let perY: number = posY / allLineCount;
             if (perY > 1) {
                 perY = 1;
             } else if (perY < 0) {
@@ -63,7 +63,7 @@ function updateMethod() {
 
 var lastPosY = 0;
 var lastAllLineCount = 0;
-function getChangeYPos() {
+function getChangeYPos():[boolean, number, number] {
     let diff: boolean = false;
     let posY = getCurCursorYPos();
     let allLineCount = getAllLineCount();

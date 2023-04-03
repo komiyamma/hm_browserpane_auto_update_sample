@@ -15,17 +15,17 @@ function updateMethod() {
         // console.log("isFileNameChanged\r\n")
         try {
             if (hidemaru.getFileFullPath() == "") {
-                hidemaru.postExecMacroMemory(`setbrowserpaneurl "about:blank", 2;`); 
+                hidemaru.postExecMacroMemory(`setbrowserpaneurl "about:blank", 2;`);
             } else {
                 hidemaru.postExecMacroMemory(`setbrowserpaneurl filename2, 2;`);
             }
-        } catch(e) {
+        } catch (e) {
             console.log(e);
         }
     }
-    else if ( isCountUpdated() ) {
-       //  console.log("isCountUpdated\r\n")
-        if (isFileUpdated()) {
+    else if (isCountUpdated()) {
+        //  console.log("isCountUpdated\r\n")
+        if (isFileLastModifyUpdated()) {
             // console.log("isFileUpdated\r\n")
             try {
                 hidemaru.postExecMacroMemory(`jsmode @"WebView2\HmBrowserAutoUpdaterMain"; js {refreshbrowserpane(2);}`);
@@ -35,14 +35,14 @@ function updateMethod() {
             }
         }
     }
-    else if ( true ) {
+    else if (true) {
         let [diff, posY, allLineCount] = getChangeYPos();
-        if (allLineCount < 0) { allLineCount = 1;}
+        if (allLineCount < 0) { allLineCount = 1; }
         if (diff && posY > 0 && allLineCount > 0) {
-            if ( posY < 15) { // 最初の行まであと10行程度なのであれば、最初にいる扱いにする。
+            if (posY < 15) { // 最初の行まであと10行程度なのであれば、最初にいる扱いにする。
                 posY = 0;
             }
-            if ( allLineCount - posY < 15 ) {
+            if (allLineCount - posY < 15) {
                 posY = allLineCount; // 最後の行まであと15行程度なのであれば、最後の行にいる扱いにする。
             }
             let perY: number = posY / allLineCount;
@@ -62,9 +62,9 @@ function updateMethod() {
 }
 
 let lastPosY = 0;
-let lastPosYArray: number[] = [3,2,1]; // 全部違う値で先頭付近でとりあえず埋めておく
+let lastPosYArray: number[] = [3, 2, 1]; // 全部違う値で先頭付近でとりあえず埋めておく
 let lastAllLineCount = 0;
-function getChangeYPos():[boolean, number, number] {
+function getChangeYPos(): [boolean, number, number] {
     let diff: boolean = false;
     let posY = getCurCursorYPos();
     // console.log("posY:" + posY);
@@ -76,7 +76,7 @@ function getChangeYPos():[boolean, number, number] {
     lastPosYArray.push(posY);
     lastPosYArray.shift();
     console.log(lastPosYArray);
-// ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
+    // ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
     if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
         let mousePosY = getCurCursorYPosFromMousePos();
         if (mousePosY > 1) {
@@ -114,7 +114,7 @@ function isFileNameChanged(): boolean {
 }
 
 let lastFileModified: number = 0;
-function isFileUpdated(): boolean {
+function isFileLastModifyUpdated(): boolean {
     let diff: boolean = false;
     let filepath = hidemaru.getFileFullPath();
     if (filepath != "") {
@@ -153,7 +153,7 @@ function isTextUpdated(): boolean {
 }
 
 function initVariable() {
-    lastPosYArray = [3,2,1];
+    lastPosYArray = [3, 2, 1];
 }
 function stopIntervalTick() {
     if (timerHandle != 0) {

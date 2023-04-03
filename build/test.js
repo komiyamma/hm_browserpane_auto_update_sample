@@ -53,7 +53,7 @@ function updateMethod() {
             else if (perY < 0) {
                 perY = 0;
             }
-            console.log("perY:" + perY);
+            // console.log("perY:"+perY);
             try {
                 hidemaru.postExecMacroMemory("jsmode @\"WebView2HmBrowserAutoUpdaterMain\"; js {setbrowserpaneurl(\"javascript:window.scrollTo(0, parseInt(".concat(perY, "*(document.documentElement.scrollHeight - document.documentElement.clientHeight)));\", 2)}"));
             }
@@ -64,17 +64,39 @@ function updateMethod() {
     }
 }
 var lastPosY = 0;
+var lastPosYArray = [3, 2, 1]; // 全部違う値で先頭付近でとりあえず埋めておく
 var lastAllLineCount = 0;
 function getChangeYPos() {
     var diff = false;
     var posY = getCurCursorYPos();
-    console.log("posY:" + posY);
+    // console.log("posY:" + posY);
     var allLineCount = getAllLineCount();
     if (lastPosY != posY) {
         lastPosY = posY;
         diff = true;
     }
-    console.log("poallLineCounts:" + allLineCount);
+    lastPosYArray.push(posY);
+    lastPosYArray.shift();
+    console.log(lastPosYArray);
+    // ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
+    if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
+        var mousePosY = getCurCursorYPosFromMousePos();
+        if (mousePosY > 1) {
+            // console.log("カーソル動いていない");
+            // console.log("posY:" + posY + "\r\n");
+            // console.log("mousePosY:" + mousePosY + "\r\n");
+            var abs = Math.abs(posY - mousePosY);
+            if (abs >= 15) {
+                // console.log("マウスの位置との差:"+ abs);
+                posY = mousePosY;
+                diff = true;
+            }
+        }
+    }
+    else {
+        diff = true;
+    }
+    // console.log("poallLineCounts:" + allLineCount);
     if (lastAllLineCount != allLineCount) {
         lastAllLineCount = allLineCount;
         diff = true;
@@ -124,12 +146,16 @@ function isTextUpdated() {
     }
     return false;
 }
+function initVariable() {
+    lastPosYArray = [3, 2, 1];
+}
 function stopIntervalTick() {
     if (timerHandle != 0) {
         clearInterval(timerHandle);
     }
 }
 function createIntervalTick(func) {
+    initVariable();
     stopIntervalTick();
     timerHandle = setInterval(func, 1000);
     return timerHandle;
@@ -143,6 +169,9 @@ function getCurCursorYPos() {
     var pos = hidemaru.getCursorPos("wcs");
     return pos[0];
 }
+function getCurCursorYPosFromMousePos() {
+    var pos = hidemaru.getCursorPosFromMousePos("wcs");
+    return pos[0];
+}
 updateMethod();
 createIntervalTick(updateMethod);
-console.log("マクロ終了");

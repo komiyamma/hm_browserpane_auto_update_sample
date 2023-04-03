@@ -62,6 +62,7 @@ function updateMethod() {
 }
 
 var lastPosY = 0;
+var lastPosYArray: number[] = [3,2,1]; // 全部違う値で先頭付近でとりあえず埋めておく
 var lastAllLineCount = 0;
 function getChangeYPos():[boolean, number, number] {
     let diff: boolean = false;
@@ -70,6 +71,26 @@ function getChangeYPos():[boolean, number, number] {
     let allLineCount = getAllLineCount();
     if (lastPosY != posY) {
         lastPosY = posY;
+        diff = true;
+    }
+    lastPosYArray.push(posY);
+    lastPosYArray.shift();
+    console.log(lastPosYArray);
+// ３つとも一緒(カーソルが動いていない) で マウスによる位置とかけ離れている時は、マウスによる位置を採用
+    if (lastPosYArray[0] == lastPosYArray[1] && lastPosYArray[0] == lastPosYArray[2]) {
+        let mousePosY = getCurCursorYPosFromMousePos();
+        if (mousePosY > 1) {
+            // console.log("カーソル動いていない");
+            // console.log("posY:" + posY + "\r\n");
+            // console.log("mousePosY:" + mousePosY + "\r\n");
+            let abs = Math.abs(posY - mousePosY);
+            if (abs >= 15) {
+                // console.log("マウスの位置との差:"+ abs);
+                posY = mousePosY;
+                diff = true;
+            }
+        }
+    } else {
         diff = true;
     }
     // console.log("poallLineCounts:" + allLineCount);
@@ -131,6 +152,9 @@ function isTextUpdated(): boolean {
     return false;
 }
 
+function initVariable() {
+    lastPosYArray = [3,2,1];
+}
 function stopIntervalTick() {
     if (timerHandle != 0) {
         clearInterval(timerHandle);
@@ -138,6 +162,7 @@ function stopIntervalTick() {
 }
 
 function createIntervalTick(func): number {
+    initVariable();
     stopIntervalTick();
     timerHandle = setInterval(func, 1000);
     return timerHandle;
@@ -151,6 +176,11 @@ function getAllLineCount() {
 
 function getCurCursorYPos() {
     let pos = hidemaru.getCursorPos("wcs");
+    return pos[0];
+}
+
+function getCurCursorYPosFromMousePos() {
+    let pos = hidemaru.getCursorPosFromMousePos("wcs");
     return pos[0];
 }
 

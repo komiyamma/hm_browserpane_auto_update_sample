@@ -124,7 +124,7 @@ function isTextUpdated() {
 }
 function stopIntervalTick() {
     if (timerHandle != 0) {
-        createIntervalTick(timerHandle);
+        clearInterval(timerHandle);
     }
 }
 function createIntervalTick(func) {

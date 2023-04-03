@@ -132,7 +132,7 @@ function isTextUpdated(): boolean {
 
 function stopIntervalTick() {
     if (timerHandle != 0) {
-        createIntervalTick(timerHandle);
+        clearInterval(timerHandle);
     }
 }
 
